@@ -2,6 +2,7 @@ import * as yup from "yup";
 import { ResultSetHeader } from "mysql2";
 import { connectToMySql } from "../db/connectToMySql";
 import { IUser } from "../utils/interface";
+import bcrypt from "bcryptjs";
 
 // Schema validasi menggunakan Yup
 export const createUserDto = yup.object({
@@ -9,6 +10,10 @@ export const createUserDto = yup.object({
     .string()
     .required("Full name is required")
     .min(3, "Full name must be at least 3 characters"),
+  userName: yup
+    .string()
+    .required("User name is required")
+    .min(3, "User name must be at least 3 characters"),
   email: yup
     .string()
     .email("Invalid email format")
@@ -35,7 +40,7 @@ export type CreateUserDto = yup.InferType<typeof createUserDto>;
 export const getAllUser = async () => {
   const db = await connectToMySql();
   const [rows] = await db.query(
-    "SELECT users.id, users.fullName, users.email, users.noTelp, users.role, users.profileImg FROM users"
+    "SELECT users.id, users.fullName, users.userName, users.email, users.noTelp, users.role, users.profileImg,  users.isVerified FROM users"
   );
 
   return rows as IUser[];
@@ -52,15 +57,19 @@ export const createUser = async (data: CreateUserDto) => {
   // ✅ Validasi data menggunakan Yup
   const validatedData = await createUserDto.validate(data, {});
 
+  // Hash Password
+  const hashedPassword = await bcrypt.hash(validatedData.password, 10);
+
   const db = await connectToMySql();
   const [result] = await db.query<ResultSetHeader>(
-    "INSERT INTO users (fullName, email, noTelp, password, profileImg, role) VALUES (?, ?, ?, ?, ?, ?)",
+    "INSERT INTO users (fullName, userName, email, noTelp, password, profileImg, role) VALUES (?, ?, ?, ?, ?, ?, ?)",
 
     [
       validatedData.fullName,
+      validatedData.userName,
       validatedData.email,
       validatedData.noTelp,
-      validatedData.password,
+      hashedPassword,
       validatedData.profileImg,
       validatedData.role,
     ]
@@ -89,14 +98,18 @@ export const updateUser = async (
   // ✅ Validasi data menggunakan Yup
   const validatedData = await createUserDto.validate(data, {});
 
+  // Hash Password
+  const hashedPassword = await bcrypt.hash(validatedData.password, 10);
+
   const db = await connectToMySql();
   const [result] = await db.query<ResultSetHeader>(
-    "UPDATE users SET fullName = ?, email = ?, noTelp = ?, password = ?, profileImg = ?, role = ? WHERE id = ?",
+    "UPDATE users SET fullName = ?, userName = ?, email = ?, noTelp = ?, password = ?, profileImg = ?, role = ? WHERE id = ?",
     [
       validatedData.fullName,
+      validatedData.userName,
       validatedData.email,
       validatedData.noTelp,
-      validatedData.password,
+      hashedPassword,
       validatedData.profileImg,
       validatedData.role,
       id,

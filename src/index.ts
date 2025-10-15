@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import { PORT } from "./utils/env";
 import { connectToMySql } from "./db/connectToMySql";
 
+import authRouter from "./routes/auth.route";
 import userRouter from "./routes/user.route";
 import productRouter from "./routes/products.route";
 import reviewRouter from "./routes/review.route";
@@ -40,6 +41,7 @@ async function init() {
     });
     // Import routes
     app.use("/api", [
+      authRouter,
       userRouter,
       productRouter,
       reviewRouter,

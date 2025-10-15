@@ -38,16 +38,10 @@ export default {
   async createUser(req: Request, res: Response) {
     try {
       const user = await createUser(req.body);
-      res.status(201).json(user);
+
+      response.success(res, user, "Create User success");
     } catch (err) {
-      if (err instanceof ValidationError) {
-        return res.status(400).json({
-          message: "Validation error",
-          errors: err.errors,
-        });
-      }
-      console.error(err);
-      res.status(500).json({ message: "Server error" });
+      response.error(res, err, "Failed to create User");
     }
   },
 
@@ -58,12 +52,6 @@ export default {
 
       response.success(res, user, "Update User success");
     } catch (err) {
-      if (err instanceof ValidationError) {
-        return res.status(400).json({
-          message: "Validation error",
-          errors: err.errors,
-        });
-      }
       response.error(res, err, "Failed to update User");
     }
   },

@@ -1,12 +1,14 @@
 export interface IUser {
   id?: number;
   fullName: string;
+  userName: string;
   email: string;
   noTelp: string;
   profileImg: string;
   password: string;
   confirmPassword: string;
   role: "admin" | "student";
+  isVerified: "verified" | "unverified";
 }
 
 export interface ICategory {

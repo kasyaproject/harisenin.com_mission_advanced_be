@@ -20,7 +20,7 @@ export default {
           status: 400,
           message,
         },
-        data: { [`${error.path}`]: error.errors[0] },
+        message: { [`${error.path}`]: error.errors[0] },
       });
     }
 
