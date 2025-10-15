@@ -1,10 +1,11 @@
-CREATE DATABASE IF NOT EXISTS video_belajar;
-USE video_belajar;
+CREATE DATABASE IF NOT EXISTS video_belajar_andika;
+USE video_belajar_andika;
 
 -- Create table for users
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   fullName VARCHAR(100) NOT NULL,
+  userName VARCHAR(100) NOT NULL UNIQUE,
   email VARCHAR(100) NOT NULL UNIQUE,
   noTelp VARCHAR(20) NOT NULL,
   password VARCHAR(255) NOT NULL,
@@ -15,11 +16,12 @@ CREATE TABLE users (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+
 -- Seed initial users
-INSERT INTO users (fullName, email, noTelp, password, role, profileImg)
+INSERT INTO users (fullName,userName, email, noTelp, password, role, profileImg)
 VALUES
-('Admin Utama', 'admin@example.com', '081234567890', '$2b$10$uD9WkbMKmBqC1TzP6HR4Ve3rTg9V88oItg.Bo6FzRjKksSR7bG9u2', 'admin', '/image/avatar-men.png'),
-('Student 1', 'student@example.com', '089876543210', '$2b$10$uD9WkbMKmBqC1TzP6HR4Ve3rTg9V88oItg.Bo6FzRjKksSR7bG9u2', 'student', '/image/avatar-women.png');
+('Admin Utama','adminutama', 'admin@example.com', '081234567890', '$2b$10$uD9WkbMKmBqC1TzP6HR4Ve3rTg9V88oItg.Bo6FzRjKksSR7bG9u2', 'admin', '/image/avatar-men.png'),
+('Student 1','student1', 'student@example.com', '089876543210', '$2b$10$uD9WkbMKmBqC1TzP6HR4Ve3rTg9V88oItg.Bo6FzRjKksSR7bG9u2', 'student', '/image/avatar-women.png');
 -- Password for both users is '123456' --
 
 -- Create table for categories
@@ -329,7 +331,6 @@ VALUES
 (9, 2),
 (9, 5);
 
----------------------------------------------------------------------------------
 -- Create table for product_reviews
 CREATE TABLE product_reviews (
   id INT AUTO_INCREMENT PRIMARY KEY,
