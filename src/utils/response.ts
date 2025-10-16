@@ -28,7 +28,7 @@ export default {
     res.status(500).json({
       meta: {
         status: 500,
-        message,
+        message: (error as Error).message || message,
       },
       data: error,
     });
