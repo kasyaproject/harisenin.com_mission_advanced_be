@@ -17,11 +17,48 @@ export const createProductDTO = yup.object({
 
 export type CreateProductDto = yup.InferType<typeof createProductDTO>;
 
-export const getAllProducts = async () => {
-  const db = await connectToMySql();
-  const [rows] = await db.query("SELECT * FROM products");
+export const getAllProducts = async (params: any) => {
+  const filter = params.filter || null;
+  const sort = params.sort || "created_at";
+  const search = params.search || "";
 
-  return rows as IProduct[];
+  const db = await connectToMySql();
+
+  let query = `
+    SELECT 
+      products.*, 
+      GROUP_CONCAT(DISTINCT categories.name) AS category_names
+    FROM products 
+    INNER JOIN product_categories  ON products.id = product_categories.product_id
+    INNER JOIN categories ON product_categories.category_id = categories.id
+    WHERE (products.title LIKE ? OR products.description LIKE ?)
+  `;
+
+  const values: any[] = [`%${search}%`, `%${search}%`];
+
+  // Filter kategori jika ada
+  if (filter) {
+    query += " AND categories.name = ?";
+    values.push(filter);
+  }
+
+  // Urutkan berdasarkan kolom tertentu dengan ASC
+  query += `
+    GROUP BY products.id
+    ORDER BY products.${sort} ASC
+  `;
+
+  const [rows]: any = await db.query(query, values);
+
+  // Ubah hasil kategori dari string ke array
+  const products = rows.map((product: any) => ({
+    ...product,
+    category_names: product.category_names
+      ? product.category_names.split(",")
+      : [],
+  }));
+
+  return products as IProduct[];
 };
 
 export const getOneProduct = async (id: number): Promise<IProduct | null> => {

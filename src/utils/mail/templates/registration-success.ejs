@@ -40,11 +40,15 @@
       .content li {
         margin-bottom: 5px;
       }
+      .a {
+        color: #fff;
+        text-decoration: none;
+      }
       .button {
         display: block;
         width: 200px;
         background-color: #16a34a;
-        color: white;
+        color: #fff;
         text-align: center;
         padding: 12px;
         font-weight: bold;
@@ -54,6 +58,7 @@
       }
       .button:hover {
         background-color: #15803d;
+        color: #fff;
       }
       .footer {
         background-color: #d1d5db;
@@ -81,7 +86,6 @@
           <li><strong>Tanggal Pendaftaran:</strong> <%= createdAt %></li>
         </ul>
         <p>Untuk memulai silahkan klik tombol di bawah ini:</p>
-        <p><%= verifiedCode %></p>
         <a href="<%= verifiedCode %>" class="button">Aktifkan Akun</a>
         <p>Jika anda mengalami kesulitan silahkan hubungi kami.</p>
         <p>Salam hangat, Tim Admin Video Belajar</p>

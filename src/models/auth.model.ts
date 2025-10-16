@@ -3,7 +3,6 @@ import { ResultSetHeader } from "mysql2";
 import { connectToMySql } from "../db/connectToMySql";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/jwt";
-import nodemailer from "nodemailer";
 import { renderMail, sendMail } from "../utils/mail/mail";
 import { CLIENT_HOST, GMAIL_USER } from "../utils/env";
 

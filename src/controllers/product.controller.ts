@@ -11,7 +11,9 @@ import response from "../utils/response";
 export default {
   findAll: async (req: Request, res: Response) => {
     try {
-      const products = await getAllProducts();
+      const params = req.query;
+
+      const products = await getAllProducts(params);
 
       response.success(res, products, "Get All Products success");
     } catch (err) {

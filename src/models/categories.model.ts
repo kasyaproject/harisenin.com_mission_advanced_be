@@ -11,8 +11,7 @@ export const createCategoryDTO = yup.object({
 
 export type CreateCategoryDto = yup.InferType<typeof createCategoryDTO>;
 
-// Fungsi untuk berinteraksi dengan database
-export const getAllCategories = async (): Promise<ICategory[]> => {
+export const getAllCategories = async () => {
   const db = await connectToMySql();
   const [rows] = await db.query("SELECT * FROM categories");
 
