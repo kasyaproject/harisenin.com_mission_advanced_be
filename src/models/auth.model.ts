@@ -53,15 +53,19 @@ export const registerUser = async (data: RegisterUserDto) => {
   // Hash Password
   const hashedPassword = await bcrypt.hash(validatedData.password, 10);
 
+  // ✅ Generate code verifikasi
+  const verifiedCode = await bcrypt.hash(validatedData.userName, 10);
+
   const db = await connectToMySql();
   const [result] = await db.query<ResultSetHeader>(
-    "INSERT INTO users (fullName, userName, email, noTelp, password) VALUES (?, ?, ?, ?, ?)",
+    "INSERT INTO users (fullName, userName, email, noTelp, password, verifiedCode) VALUES (?, ?, ?, ?, ?, ?)",
     [
       validatedData.fullName,
       validatedData.userName,
       validatedData.email,
       validatedData.noTelp,
       hashedPassword,
+      verifiedCode,
     ]
   );
 
@@ -75,10 +79,7 @@ export const registerUser = async (data: RegisterUserDto) => {
   }
 
   // ✅ Return data lengkap
-  return {
-    message: "Registered User successfully",
-    data: rows[0],
-  };
+  return { verifiedCode: rows[0].verifiedCode };
 };
 
 export const loginUser = async (data: LoginUserDto) => {
@@ -128,8 +129,7 @@ export const loginUser = async (data: LoginUserDto) => {
 
   // ✅ Return data lengkap
   return {
-    message: "Login User successfully",
-    data: { ...user, accessToken: token },
+    accessToken: token,
   };
 };
 
@@ -145,4 +145,51 @@ export const checkMe = async (id: number) => {
   }
 
   return rows[0];
+};
+
+export const activationEmail = async (code: string) => {
+  const db = await connectToMySql();
+
+  const [rows]: any = await db.query(
+    "SELECT * FROM users WHERE verifiedCode = ?",
+    [code]
+  );
+
+  // Jika user tidak ditemukan
+  if (!rows.length) {
+    const err: any = new Error("User not found");
+    err.status = 404;
+    throw err;
+  }
+
+  // Jika user sudah terverifikasi
+  if (rows[0].isVerified === "verified") {
+    const err: any = new Error("User already verified");
+    err.status = 400;
+    throw err;
+  }
+
+  const [result] = await db.query<ResultSetHeader>(
+    "UPDATE users SET isVerified = 'verified' WHERE verifiedCode = ?",
+    [code]
+  );
+
+  if (result.affectedRows === 0) {
+    const err: any = new Error("User not found result");
+    err.status = 404;
+    throw err;
+  }
+
+  // ✅ Return data lengkap
+  const [data]: any = await db.query("SELECT * FROM users WHERE id = ?", [
+    rows[0].id,
+  ]);
+
+  if (!data.length) {
+    const err: any = new Error("Failed to retrieve Registered User data");
+    err.status = 500;
+    throw err;
+  }
+
+  return data[0];
 };

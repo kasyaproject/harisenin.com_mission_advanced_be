@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
 import response from "../utils/response";
-import { checkMe, loginUser, registerUser } from "./../models/auth.model";
+import {
+  activationEmail,
+  checkMe,
+  loginUser,
+  registerUser,
+} from "./../models/auth.model";
 import { IReqUser } from "../utils/interface";
 
 export default {
@@ -46,7 +51,11 @@ export default {
 
   activationEmail: async (req: Request, res: Response) => {
     try {
-      res.send("Activation Email");
+      const { code } = req.body;
+
+      const user = await activationEmail(code);
+
+      response.success(res, user, "Activation email success");
     } catch (err) {
       response.error(res, err, "Failed to activation email");
     }

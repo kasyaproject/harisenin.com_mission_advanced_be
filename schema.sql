@@ -12,6 +12,7 @@ CREATE TABLE users (
   role ENUM('admin', 'student') DEFAULT 'student',
   profileImg VARCHAR(255) DEFAULT '/image/avatar-men.png',
   isVerified ENUM('verified', 'unverified') DEFAULT 'unverified',
+  verifiedCode VARCHAR(255) DEFAULT NULL,
 
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
