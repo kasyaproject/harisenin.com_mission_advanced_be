@@ -50,7 +50,9 @@ export const createOrder = async (data: CreateOrderDto) => {
   ]);
 
   if (!rows.length) {
-    throw new Error("Failed to retrieve created Orders data");
+    const err: any = new Error("Failed to retrieve created Orders data");
+    err.status = 500;
+    throw err;
   }
 
   // ✅ Return data lengkap

@@ -81,7 +81,9 @@ export const createUser = async (data: CreateUserDto) => {
   ]);
 
   if (!rows.length) {
-    throw new Error("Failed to retrieve created User data");
+    const err: any = new Error("Failed to retrieve created User data");
+    err.status = 500;
+    throw err;
   }
 
   // ✅ Return data lengkap
@@ -117,13 +119,17 @@ export const updateUser = async (
   );
 
   if (result.affectedRows === 0) {
-    throw new Error("User not found");
+    const err: any = new Error("User not found");
+    err.status = 404;
+    throw err;
   }
 
   const updatedUser = await getOneUser(id);
 
   if (!updatedUser) {
-    throw new Error("User not found after update");
+    const err: any = new Error("Failed to retrieve updated User data");
+    err.status = 500;
+    throw err;
   }
 
   return updatedUser;

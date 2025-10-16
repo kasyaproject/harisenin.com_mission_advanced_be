@@ -87,17 +87,25 @@ export const loginUser = async (data: LoginUserDto) => {
 
   // ✅ Cari user berdasarkan email
   const db = await connectToMySql();
-  const [rows]: any = await db.query("SELECT * FROM users WHERE email = ?", [
+  const [rows]: any = await db.query("SELECT * FROM users WHERE email = ? ", [
     validatedData.email,
   ]);
 
+  // Jika user tidak ditemukan
   if (!rows.length) {
     const err: any = new Error("User not found");
     err.status = 404;
     throw err;
   }
 
-  // simpan data user ke const user
+  // Jika user belum terverifikasi
+  if (rows[0].isVerified === "unverified") {
+    const err: any = new Error("User not verified");
+    err.status = 401;
+    throw err;
+  }
+
+  // simpan data user ke const user jika lolos validasi
   const user = rows[0];
 
   // ✅ Verifikasi password
@@ -107,7 +115,9 @@ export const loginUser = async (data: LoginUserDto) => {
   );
 
   if (!isPasswordCorrect) {
-    throw new Error("Invalid password");
+    const err: any = new Error("Invalid password");
+    err.status = 401;
+    throw err;
   }
 
   // Jika lolos validasi maka Generta Token jwt

@@ -44,7 +44,9 @@ export const createCategory = async (data: CreateCategoryDto) => {
   ]);
 
   if (!rows.length) {
-    throw new Error("Failed to retrieve created Categories data");
+    const err: any = new Error("Failed to retrieve created Categories data");
+    err.status = 500;
+    throw err;
   }
 
   // ✅ Return data lengkap
@@ -68,13 +70,17 @@ export const updateCategory = async (
   );
 
   if (result.affectedRows === 0) {
-    throw new Error("Category not found");
+    const err: any = new Error("Category not found");
+    err.status = 404;
+    throw err;
   }
 
   const updatedCategory = await getOneCategory(id);
 
   if (!updatedCategory) {
-    throw new Error("Category not found after update");
+    const err: any = new Error("Category not found after update");
+    err.status = 404;
+    throw err;
   }
 
   return updatedCategory;
@@ -88,6 +94,8 @@ export const deleteCategory = async (id: number): Promise<void> => {
   );
 
   if (result.affectedRows === 0) {
-    throw new Error("Category not found");
+    const err: any = new Error("Category not found");
+    err.status = 404;
+    throw err;
   }
 };

@@ -26,7 +26,9 @@ export const addCategorytoProduct = async (data: any) => {
   );
 
   if (!rows.length) {
-    throw new Error("Failed to retrieve Modul Materi course data");
+    const err: any = new Error("Failed to retrieve Modul Materi course data");
+    err.status = 500;
+    throw err;
   }
 
   // ✅ Return data lengkap

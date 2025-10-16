@@ -50,7 +50,9 @@ export const createTutor = async (data: CreateTutorDto) => {
   ]);
 
   if (!rows.length) {
-    throw new Error("Failed to retrieve created Tutors data");
+    const err: any = new Error("Failed to retrieve created Tutors data");
+    err.status = 500;
+    throw err;
   }
 
   // ✅ Return data lengkap
@@ -81,13 +83,17 @@ export const updateTutor = async (
   );
 
   if (result.affectedRows === 0) {
-    throw new Error("Tutor not found");
+    const err: any = new Error("Tutor not found");
+    err.status = 404;
+    throw err;
   }
 
   const updatedTutor = await getOneTutor(id);
 
   if (!updatedTutor) {
-    throw new Error("Tutor not found after update");
+    const err: any = new Error("Failed to retrieve updated Tutor data");
+    err.status = 500;
+    throw err;
   }
 
   return updatedTutor;

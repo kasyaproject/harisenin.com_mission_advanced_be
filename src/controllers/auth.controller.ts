@@ -24,14 +24,6 @@ export default {
     }
   },
 
-  logout: async (req: Request, res: Response) => {
-    try {
-      res.send("Logout");
-    } catch (err) {
-      response.error(res, err, "Failed to logout");
-    }
-  },
-
   checkMe: async (req: Request, res: Response) => {
     try {
       // Ambil data user berdasarkan token

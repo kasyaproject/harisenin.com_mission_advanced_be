@@ -26,7 +26,9 @@ export const addReviewtoProduct = async (data: IProduct_Review) => {
   );
 
   if (!rows.length) {
-    throw new Error("Failed to retrieve Review Product course data");
+    const err: any = new Error("Failed to retrieve Review Product course data");
+    err.status = 500;
+    throw err;
   }
 
   // ✅ Return data lengkap

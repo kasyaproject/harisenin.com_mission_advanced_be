@@ -42,7 +42,9 @@ export const createCourse = async (data: CreateMyCoursesDto) => {
   ]);
 
   if (!rows.length) {
-    throw new Error("Failed to retrieve created course data");
+    const err: any = new Error("MyCourse not found");
+    err.status = 404;
+    throw err;
   }
 
   // ✅ Return data lengkap
@@ -53,32 +55,31 @@ export const createCourse = async (data: CreateMyCoursesDto) => {
 };
 
 export const updateCourseDone = async (id: number) => {
-  try {
-    const db = await connectToMySql();
+  const db = await connectToMySql();
 
-    const [result] = await db.query<ResultSetHeader>(
-      "UPDATE mycourses SET status = 'done' WHERE id = ?",
-      [id]
-    );
+  const [result] = await db.query<ResultSetHeader>(
+    "UPDATE mycourses SET status = 'done' WHERE id = ?",
+    [id]
+  );
 
-    if (result.affectedRows === 0) {
-      throw new Error("MyCourse not found");
-    }
-
-    const [rows]: any = await db.query("SELECT * FROM mycourses WHERE id = ?", [
-      id,
-    ]);
-
-    if (!rows.length) {
-      throw new Error("Failed to retrieve updated MyCourse data");
-    }
-
-    return {
-      message: "MyCourse status updated successfully",
-      data: rows[0],
-    };
-  } catch (error) {
-    console.error("Error updating MyCourse status:", error);
-    throw error;
+  if (result.affectedRows === 0) {
+    const err: any = new Error("MyCourse not found");
+    err.status = 404;
+    throw err;
   }
+
+  const [rows]: any = await db.query("SELECT * FROM mycourses WHERE id = ?", [
+    id,
+  ]);
+
+  if (!rows.length) {
+    const err: any = new Error("MyCourse not found");
+    err.status = 404;
+    throw err;
+  }
+
+  return {
+    message: "MyCourse status updated successfully",
+    data: rows[0],
+  };
 };

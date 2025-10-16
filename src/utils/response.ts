@@ -24,13 +24,21 @@ export default {
       });
     }
 
-    // Response error default
-    res.status(500).json({
+    // ✅ Jika error punya custom status (misalnya 404)
+    const statusCode =
+      typeof error === "object" && error !== null && "status" in error
+        ? (error as any).status
+        : 500;
+
+    const errorMessage =
+      (error as Error).message || message || "Internal Server Error";
+
+    // ✅ Response error default
+    res.status(statusCode).json({
       meta: {
-        status: 500,
-        message: (error as Error).message || message,
+        status: statusCode,
+        message: errorMessage,
       },
-      data: error,
     });
   },
 

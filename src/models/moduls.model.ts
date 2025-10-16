@@ -72,7 +72,11 @@ export const getOneModul = async (id: number): Promise<IModuls | null> => {
     [id]
   );
 
-  if (!rows.length) return null;
+  if (!rows.length) {
+    const err: any = new Error("Modul not found");
+    err.status = 404;
+    throw err;
+  }
 
   const modul: IModuls = {
     id: rows[0].modul_id,
@@ -111,7 +115,9 @@ export const createModul = async (data: CreateModulDto) => {
   ]);
 
   if (!rows.length) {
-    throw new Error("Failed to retrieve created Moduls data");
+    const err: any = new Error("Failed to retrieve created Moduls data");
+    err.status = 500;
+    throw err;
   }
 
   // ✅ Return data lengkap
@@ -135,13 +141,17 @@ export const updateModul = async (
   );
 
   if (result.affectedRows === 0) {
-    throw new Error("Modul not found");
+    const err: any = new Error("Modul not found");
+    err.status = 404;
+    throw err;
   }
 
   const updatedModul = await getOneModul(id);
 
   if (!updatedModul) {
-    throw new Error("Modul not found after update");
+    const err: any = new Error("Modul not found after update");
+    err.status = 404;
+    throw err;
   }
 
   return updatedModul;
@@ -155,6 +165,8 @@ export const removeModul = async (id: number): Promise<void> => {
   );
 
   if (result.affectedRows === 0) {
-    throw new Error("Modul not found");
+    const err: any = new Error("Modul not found");
+    err.status = 404;
+    throw err;
   }
 };

@@ -45,7 +45,9 @@ export const createReview = async (data: CreateReviewDto) => {
   ]);
 
   if (!rows.length) {
-    throw new Error("Failed to retrieve created Reviews data");
+    const err: any = new Error("Failed to retrieve created Reviews data");
+    err.status = 500;
+    throw err;
   }
 
   // ✅ Return data lengkap
@@ -69,7 +71,9 @@ export const updateReview = async (
   );
 
   if (result.affectedRows === 0) {
-    throw new Error("Product not found");
+    const err: any = new Error("Product not found");
+    err.status = 404;
+    throw err;
   }
 
   const updatedReview = await getOneReview(id);

@@ -28,7 +28,9 @@ export const addMateriToModul = async (data: IMateri_Modul) => {
   );
 
   if (!rows.length) {
-    throw new Error("Failed to retrieve Modul Materi course data");
+    const err: any = new Error("Failed to retrieve Modul Materi course data");
+    err.status = 500;
+    throw err;
   }
 
   // ✅ Return data lengkap
@@ -56,7 +58,9 @@ export const removeMateriFromModul = async (
   );
 
   if (!rows.length) {
-    throw new Error("Failed to retrieve Modul Materi course data");
+    const err: any = new Error("Failed to retrieve Modul Materi course data");
+    err.status = 500;
+    throw err;
   }
 
   // ✅ Return data lengkap

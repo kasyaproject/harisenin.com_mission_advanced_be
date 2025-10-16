@@ -44,7 +44,9 @@ export const createMateri = async (data: CreateMateriDto) => {
   ]);
 
   if (!rows.length) {
-    throw new Error("Failed to retrieve created Materi data");
+    const err: any = new Error("Failed to retrieve created Materis data");
+    err.status = 500;
+    throw err;
   }
 
   // ✅ Return data lengkap
@@ -68,13 +70,17 @@ export const updateMateri = async (
   );
 
   if (result.affectedRows === 0) {
-    throw new Error("Materi not found");
+    const err: any = new Error("Materi not found");
+    err.status = 404;
+    throw err;
   }
 
   const updatedMateri = await getOneMateri(id);
 
   if (!updatedMateri) {
-    throw new Error("Materi not found after update");
+    const err: any = new Error("Materi not found after update");
+    err.status = 404;
+    throw err;
   }
 
   return updatedMateri;
@@ -88,6 +94,8 @@ export const removeMateri = async (id: number): Promise<void> => {
   );
 
   if (result.affectedRows === 0) {
-    throw new Error("Materi not found");
+    const err: any = new Error("Materi not found");
+    err.status = 404;
+    throw err;
   }
 };

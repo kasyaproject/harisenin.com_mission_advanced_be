@@ -39,7 +39,11 @@ export const createPretest = async (data: CreatePretestDto) => {
   const db = await connectToMySql();
   const [result] = await db.query<ResultSetHeader>(
     "INSERT INTO pretests (question, options, correct_answer) VALUES (?, ?, ?)",
-    [data.question, JSON.stringify(data.options), data.correct_answer]
+    [
+      validatedData.question,
+      JSON.stringify(validatedData.options),
+      validatedData.correct_answer,
+    ]
   );
 
   // ✅ Ambil data yang baru dibuat berdasarkan insertId
@@ -48,7 +52,9 @@ export const createPretest = async (data: CreatePretestDto) => {
   ]);
 
   if (!rows.length) {
-    throw new Error("Failed to retrieve created Pretests data");
+    const err: any = new Error("Failed to retrieve created Pretests data");
+    err.status = 500;
+    throw err;
   }
 
   // ✅ Return data lengkap
@@ -68,17 +74,26 @@ export const updatePretest = async (
   const db = await connectToMySql();
   const [result] = await db.query<any>(
     "UPDATE pretests SET question = ?, options = ?, correct_answer = ? WHERE id = ?",
-    [data.question, JSON.stringify(data.options), data.correct_answer, id]
+    [
+      validatedData.question,
+      JSON.stringify(validatedData.options),
+      validatedData.correct_answer,
+      id,
+    ]
   );
 
   if (result.affectedRows === 0) {
-    throw new Error("Pretest not found");
+    const err: any = new Error("Pretest not found");
+    err.status = 404;
+    throw err;
   }
 
   const updatedPretest = await getOnePretest(id);
 
   if (!updatedPretest) {
-    throw new Error("Pretest not found after update");
+    const err: any = new Error("Pretest not found after update");
+    err.status = 500;
+    throw err;
   }
 
   return updatedPretest;
@@ -91,7 +106,10 @@ export const deletePretest = async (id: number): Promise<void> => {
   ]);
 
   if (result.affectedRows === 0) {
-    throw new Error("Pretest not found");
+    const err: any = new Error("Pretest not found");
+    err.status = 404;
+    throw err;
   }
+
   return;
 };

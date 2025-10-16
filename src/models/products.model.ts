@@ -49,7 +49,9 @@ export const createProduct = async (data: CreateProductDto) => {
   ]);
 
   if (!rows.length) {
-    throw new Error("Failed to retrieve created Products data");
+    const err: any = new Error("Failed to retrieve created Products data");
+    err.status = 500;
+    throw err;
   }
 
   // ✅ Return data lengkap
@@ -73,13 +75,17 @@ export const updateProduct = async (
   );
 
   if (result.affectedRows === 0) {
-    throw new Error("Product not found");
+    const err: any = new Error("Product not found");
+    err.status = 404;
+    throw err;
   }
 
   const updatedProduct = await getOneProduct(id);
 
   if (!updatedProduct) {
-    throw new Error("Product not found after update");
+    const err: any = new Error("Failed to retrieve updated product data");
+    err.status = 500;
+    throw err;
   }
 
   return updatedProduct;

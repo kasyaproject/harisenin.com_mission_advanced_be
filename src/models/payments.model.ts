@@ -19,6 +19,12 @@ export const getAllPayments = async () => {
   const db = await connectToMySql();
   const [rows] = await db.query("SELECT * FROM payments");
 
+  if (!rows) {
+    const err: any = new Error("Failed to retrieve payments data");
+    err.status = 500;
+    throw err;
+  }
+
   return rows as IPayment[];
 };
 
@@ -27,6 +33,12 @@ export const getOnePayment = async (id: number): Promise<IPayment | null> => {
   const [rows]: any = await db.query("SELECT * FROM payments WHERE id = ?", [
     id,
   ]);
+
+  if (!rows) {
+    const err: any = new Error("Failed to retrieve payments data");
+    err.status = 500;
+    throw err;
+  }
 
   return rows.length ? (rows[0] as IPayment) : null;
 };
@@ -47,7 +59,9 @@ export const createPayment = async (data: CreatePaymentDto) => {
   ]);
 
   if (!rows.length) {
-    throw new Error("Failed to retrieve created Payments data");
+    const err: any = new Error("Failed to retrieve updated payment data");
+    err.status = 500;
+    throw err;
   }
 
   // ✅ Return data lengkap
@@ -58,94 +72,91 @@ export const createPayment = async (data: CreatePaymentDto) => {
 };
 
 export const paidPayment = async (id: number) => {
-  try {
-    const db = await connectToMySql();
+  const db = await connectToMySql();
 
-    const [result] = await db.query<ResultSetHeader>(
-      "UPDATE payments SET status = 'paid' WHERE id = ?",
-      [id]
-    );
+  const [result] = await db.query<ResultSetHeader>(
+    "UPDATE payments SET status = 'paid' WHERE id = ?",
+    [id]
+  );
 
-    if (result.affectedRows === 0) {
-      throw new Error("Payment not found");
-    }
-
-    const [rows]: any = await db.query("SELECT * FROM payments WHERE id = ?", [
-      id,
-    ]);
-
-    if (!rows.length) {
-      throw new Error("Failed to retrieve updated payment data");
-    }
-
-    return {
-      message: "Payment status updated successfully",
-      data: rows[0],
-    };
-  } catch (error) {
-    console.error("Error updating payment status:", error);
-    throw error;
+  if (result.affectedRows === 0) {
+    const err: any = new Error("Pament not found");
+    err.status = 404;
+    throw err;
   }
+
+  const [rows]: any = await db.query("SELECT * FROM payments WHERE id = ?", [
+    id,
+  ]);
+
+  if (!rows.length) {
+    const err: any = new Error("Failed to retrieve updated payment data");
+    err.status = 500;
+    throw err;
+  }
+
+  return {
+    message: "Payment status updated successfully",
+    data: rows[0],
+  };
 };
 
 export const cancelledPayment = async (id: number) => {
-  try {
-    const db = await connectToMySql();
+  const db = await connectToMySql();
 
-    const [result] = await db.query<ResultSetHeader>(
-      "UPDATE payments SET status = 'cancelled' WHERE id = ?",
-      [id]
-    );
+  const [result] = await db.query<ResultSetHeader>(
+    "UPDATE payments SET status = 'cancelled' WHERE id = ?",
+    [id]
+  );
 
-    if (result.affectedRows === 0) {
-      throw new Error("Payment not found");
-    }
-
-    const [rows]: any = await db.query("SELECT * FROM payments WHERE id = ?", [
-      id,
-    ]);
-
-    if (!rows.length) {
-      throw new Error("Failed to retrieve updated payment data");
-    }
-
-    return {
-      message: "Payment status updated successfully",
-      data: rows[0],
-    };
-  } catch (error) {
-    console.error("Error updating payment status:", error);
-    throw error;
+  if (result.affectedRows === 0) {
+    const err: any = new Error("Pament not found");
+    err.status = 404;
+    throw err;
   }
+
+  const [rows]: any = await db.query("SELECT * FROM payments WHERE id = ?", [
+    id,
+  ]);
+
+  if (!rows.length) {
+    const err: any = new Error("Failed to retrieve updated payment data");
+    err.status = 500;
+    throw err;
+  }
+
+  return {
+    message: "Payment status updated successfully",
+    data: rows[0],
+  };
 };
 
 export const pendingPayment = async (id: number) => {
-  try {
-    const db = await connectToMySql();
+  const db = await connectToMySql();
 
-    const [result] = await db.query<ResultSetHeader>(
-      "UPDATE payments SET status = 'pending' WHERE id = ?",
-      [id]
-    );
+  const [result] = await db.query<ResultSetHeader>(
+    "UPDATE payments SET status = 'pending' WHERE id = ?",
+    [id]
+  );
 
-    if (result.affectedRows === 0) {
-      throw new Error("Payment not found");
-    }
-
-    const [rows]: any = await db.query("SELECT * FROM payments WHERE id = ?", [
-      id,
-    ]);
-
-    if (!rows.length) {
-      throw new Error("Failed to retrieve updated payment data");
-    }
-
-    return {
-      message: "Payment status updated successfully",
-      data: rows[0],
-    };
-  } catch (error) {
-    console.error("Error updating payment status:", error);
-    throw error;
+  if (result.affectedRows === 0) {
+    const err: any = new Error("Payment not found");
+    err.status = 404;
+    throw err;
   }
+
+  const [rows]: any = await db.query("SELECT * FROM payments WHERE id = ?", [
+    id,
+  ]);
+
+  if (!rows.length) {
+    const err: any = new Error("Payment not found");
+    err.status = 404;
+    throw err;
+  }
+
+  return {
+    message: "Payment status updated successfully",
+    data: rows[0],
+  };
 };
