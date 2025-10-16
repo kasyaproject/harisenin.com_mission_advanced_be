@@ -3,6 +3,9 @@ import { ResultSetHeader } from "mysql2";
 import { connectToMySql } from "../db/connectToMySql";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/jwt";
+import nodemailer from "nodemailer";
+import { renderMail, sendMail } from "../utils/mail/mail";
+import { CLIENT_HOST, GMAIL_USER } from "../utils/env";
 
 // Schema validasi menggunakan Yup
 export const registerUserDto = yup.object({
@@ -30,6 +33,7 @@ export const registerUserDto = yup.object({
     .string()
     .oneOf([yup.ref("password")], "Passwords must match")
     .required("Confirm Password is required"),
+  createdAt: yup.date().default(new Date()),
 });
 
 export const loginUserDto = yup.object({
@@ -78,8 +82,27 @@ export const registerUser = async (data: RegisterUserDto) => {
     throw new Error("Failed to retrieve Registered User data");
   }
 
+  // Kirim data user ke ejs untuk dikirim ke email
+  const contentMail = await renderMail("registration-success.ejs", {
+    userName: validatedData.userName,
+    fullName: validatedData.fullName,
+    email: validatedData.email,
+    createdAt: validatedData.createdAt,
+    verifiedCode: `${CLIENT_HOST}/api/auth/activation?code=${verifiedCode}`,
+  });
+
+  // Kirim email ke user
+  await sendMail({
+    from: GMAIL_USER,
+    to: validatedData.email,
+    subject: "Registrasi Berhasil - Aktivasi akun anda !",
+    content: contentMail,
+  });
+
   // ✅ Return data lengkap
-  return { verifiedCode: rows[0].verifiedCode };
+  return {
+    verifiedCode: rows[0].verifiedCode,
+  };
 };
 
 export const loginUser = async (data: LoginUserDto) => {

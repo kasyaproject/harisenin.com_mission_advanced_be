@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Belajar | Registration Success</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f8f8;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .container {
+        max-width: 600px;
+        background: #fff;
+        border: 1px solid #ddd;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        overflow: hidden;
+      }
+      .header {
+        background-color: #16a34a;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        font-size: 24px;
+        font-weight: bold;
+      }
+      .content {
+        padding: 20px;
+      }
+      .content ul {
+        padding-left: 20px;
+        padding-bottom: 20px;
+      }
+      .content li {
+        margin-bottom: 5px;
+      }
+      .button {
+        display: block;
+        width: 200px;
+        background-color: #16a34a;
+        color: white;
+        text-align: center;
+        padding: 12px;
+        font-weight: bold;
+        text-decoration: none;
+        border-radius: 5px;
+        margin: 20px 0;
+      }
+      .button:hover {
+        background-color: #15803d;
+      }
+      .footer {
+        background-color: #d1d5db;
+        text-align: center;
+        padding: 10px;
+        font-size: 14px;
+        color: #4b5563;
+      }
+    </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log("Registration Success Page Loaded");
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">Selamat Datang!</div>
+      <div class="content">
+        <p>Halo <%= userName %>, Anda telah berhasil mendaftar!</p>
+        <p>Berikut adalah informasi akun Anda:</p>
+        <ul>
+          <li><strong>Nama:</strong> <%= fullName %></li>
+          <li><strong>Email:</strong> <%= email %></li>
+          <li><strong>Tanggal Pendaftaran:</strong> <%= createdAt %></li>
+        </ul>
+        <p>Untuk memulai silahkan klik tombol di bawah ini:</p>
+        <p><%= verifiedCode %></p>
+        <a href="<%= verifiedCode %>" class="button">Aktifkan Akun</a>
+        <p>Jika anda mengalami kesulitan silahkan hubungi kami.</p>
+        <p>Salam hangat, Tim Admin Video Belajar</p>
+      </div>
+      <div class="footer">&copy; 2025 Video Belajar. All Rights Reserved.</div>
+    </div>
+  </body>
+</html>
