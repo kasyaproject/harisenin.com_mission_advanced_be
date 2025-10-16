@@ -1,5 +1,4 @@
 export interface IUser {
-  id?: number;
   fullName: string;
   userName: string;
   email: string;
@@ -9,6 +8,25 @@ export interface IUser {
   confirmPassword: string;
   role: "admin" | "student";
   isVerified: "verified" | "unverified";
+}
+
+export interface IUserToken
+  extends Omit<
+    IUser,
+    | "fullName"
+    | "userName"
+    | "email"
+    | "noTelp"
+    | "profileImg"
+    | "password"
+    | "confirmPassword"
+    | "isVerified"
+  > {
+  id?: number;
+}
+
+export interface IReqUser extends Request {
+  user?: IUserToken;
 }
 
 export interface ICategory {
